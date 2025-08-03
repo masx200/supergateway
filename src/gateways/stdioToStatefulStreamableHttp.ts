@@ -147,7 +147,10 @@ export async function stdioToStatefulStreamableHttp(
         },
       })
       await server.connect(transport)
-      const child = spawn(stdioCmd, { shell: true })
+      const child = spawn(stdioCmd, { shell: true,
+      
+      env: process.env,
+       })
       child.on('exit', (code, signal) => {
         logger.error(`Child exited: code=${code}, signal=${signal}`)
         transport.close()
