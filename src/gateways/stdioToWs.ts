@@ -59,7 +59,11 @@ export async function stdioToWs(args: StdioToWsArgs) {
   })
 
   try {
-    child = spawn(stdioCmd, { shell: true })
+    child = spawn(stdioCmd, { shell: true ,
+    
+    
+    env: process.env,
+    })
     child.on('exit', (code, signal) => {
       logger.error(`Child exited: code=${code}, signal=${signal}`)
       cleanup()
