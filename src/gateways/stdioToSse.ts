@@ -45,6 +45,7 @@ async function factory(
 ) {
   const child: ChildProcessWithoutNullStreams = spawn(stdioCmd, {
     shell: true,
+    env: process.env,
   })
   child.on('exit', (code, signal) => {
     logger.error(`Child exited: code=${code}, signal=${signal}`)
