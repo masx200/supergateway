@@ -32,7 +32,54 @@ const setResponseHeaders = ({
   Object.entries(headers).forEach(([key, value]) => {
     res.setHeader(key, value)
   })
+async function factory(
+  stdioCmd: string,
+  logger: Logger,
+  sessions: Record<
+    string,
+    {
+      transport: SSEServerTransport
+      response: express.Response
+    }
+  >,
+) {
+  const child: ChildProcessWithoutNullStreams = spawn(stdioCmd, {
+    shell: true,
+  })
+  child.on('exit', (code, signal) => {
+    logger.error(`Child exited: code=${code}, signal=${signal}`)
+    process.exit(code ?? 1)
+  })
 
+  let buffer = ''
+  child.stdout.on('data', (chunk: Buffer) => {
+    buffer += chunk.toString('utf8')
+    const lines = buffer.split(/\r?\n/)
+    buffer = lines.pop() ?? ''
+    lines.forEach((line) => {
+      if (!line.trim()) return
+      try {
+        const jsonMsg = JSON.parse(line)
+        logger.info('Child → SSE:', jsonMsg)
+        for (const [sid, session] of Object.entries(sessions)) {
+          try {
+            session.transport.send(jsonMsg)
+          } catch (err) {
+            logger.error(`Failed to send to session ${sid}:`, err)
+            delete sessions[sid]
+          }
+        }
+      } catch {
+        logger.error(`Child non-JSON: ${line}`)
+      }
+    })
+  })
+
+  child.stderr.on('data', (chunk: Buffer) => {
+    logger.error(`Child stderr: ${chunk.toString('utf8')}`)
+  })
+  return child
+}
 export async function stdioToSse(args: StdioToSseArgs) {
   const {
     stdioCmd,
@@ -73,14 +120,6 @@ export async function stdioToSse(args: StdioToSseArgs) {
   )
 
   onSignals({ logger })
-
-  const child: ChildProcessWithoutNullStreams = spawn(stdioCmd, {
-    shell: true,
-  })
-  child.on('exit', (code, signal) => {
-    logger.error(`Child exited: code=${code}, signal=${signal}`)
-    process.exit(code ?? 1)
-  })
 
   const server = new Server(
     { name: 'supergateway', version: getVersion() },
@@ -128,6 +167,8 @@ export async function stdioToSse(args: StdioToSseArgs) {
     if (sessionId) {
       sessions[sessionId] = { transport: sseTransport, response: res }
     }
+
+    const child = await factory(stdioCmd, logger, sessions)
 
     sseTransport.onmessage = (msg: JSONRPCMessage) => {
       logger.info(`SSE → Child (session ${sessionId}): ${JSON.stringify(msg)}`)
@@ -182,33 +223,5 @@ export async function stdioToSse(args: StdioToSseArgs) {
     logger.info(`Listening on port ${port}`)
     logger.info(`SSE endpoint: http://localhost:${port}${ssePath}`)
     logger.info(`POST messages: http://localhost:${port}${messagePath}`)
-  })
-
-  let buffer = ''
-  child.stdout.on('data', (chunk: Buffer) => {
-    buffer += chunk.toString('utf8')
-    const lines = buffer.split(/\r?\n/)
-    buffer = lines.pop() ?? ''
-    lines.forEach((line) => {
-      if (!line.trim()) return
-      try {
-        const jsonMsg = JSON.parse(line)
-        logger.info('Child → SSE:', jsonMsg)
-        for (const [sid, session] of Object.entries(sessions)) {
-          try {
-            session.transport.send(jsonMsg)
-          } catch (err) {
-            logger.error(`Failed to send to session ${sid}:`, err)
-            delete sessions[sid]
-          }
-        }
-      } catch {
-        logger.error(`Child non-JSON: ${line}`)
-      }
-    })
-  })
-
-  child.stderr.on('data', (chunk: Buffer) => {
-    logger.error(`Child stderr: ${chunk.toString('utf8')}`)
   })
 }
