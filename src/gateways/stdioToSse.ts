@@ -42,6 +42,8 @@ async function factory(
       response: express.Response
     }
   >,
+
+  transport: SSEServerTransport,
 ) {
   const child: ChildProcessWithoutNullStreams = spawn(stdioCmd, {
     shell: true,
@@ -49,7 +51,9 @@ async function factory(
   })
   child.on('exit', (code, signal) => {
     logger.error(`Child exited: code=${code}, signal=${signal}`)
-    process.exit(code ?? 1)
+    //这个改成关闭transport，而不是关闭process
+    transport.close()
+    //process.exit(code ?? 1)
   })
 
   let buffer = ''
@@ -169,7 +173,7 @@ export async function stdioToSse(args: StdioToSseArgs) {
       sessions[sessionId] = { transport: sseTransport, response: res }
     }
 
-    const child = await factory(stdioCmd, logger, sessions)
+    const child = await factory(stdioCmd, logger, sessions, sseTransport)
 
     sseTransport.onmessage = (msg: JSONRPCMessage) => {
       logger.info(`SSE → Child (session ${sessionId}): ${JSON.stringify(msg)}`)
