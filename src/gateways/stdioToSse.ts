@@ -127,11 +127,17 @@ export async function stdioToSse(args: StdioToSseArgs) {
     sseTransport.onclose = () => {
       logger.info(`SSE connection closed (session ${sessionId})`)
       delete sessions[sessionId]
+
+      //  handle child process exit
+
+      child.kill()
     }
 
     sseTransport.onerror = (err) => {
       logger.error(`SSE error (session ${sessionId}):`, err)
       delete sessions[sessionId]
+      //  handle child process exit
+      child.kill()
     }
 
     req.on('close', () => {
