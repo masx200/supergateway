@@ -1,7 +1,7 @@
 import express from 'express'
 import bodyParser from 'body-parser'
 import cors, { type CorsOptions } from 'cors'
-import { spawn, ChildProcessWithoutNullStreams } from 'child_process'
+import { ChildProcessWithoutNullStreams, spawn } from 'child_process'
 import { Server } from '@modelcontextprotocol/sdk/server/index.js'
 import { SSEServerTransport } from '@modelcontextprotocol/sdk/server/sse.js'
 import { JSONRPCMessage } from '@modelcontextprotocol/sdk/types.js'
@@ -47,7 +47,9 @@ export async function stdioToSse(args: StdioToSseArgs) {
   } = args
 
   logger.info(
-    `  - Headers: ${Object(headers).length ? JSON.stringify(headers) : '(none)'}`,
+    `  - Headers: ${
+      Object(headers).length ? JSON.stringify(headers) : '(none)'
+    }`,
   )
   logger.info(`  - port: ${port}`)
   logger.info(`  - stdio: ${stdioCmd}`)
@@ -58,15 +60,23 @@ export async function stdioToSse(args: StdioToSseArgs) {
   logger.info(`  - messagePath: ${messagePath}`)
 
   logger.info(
-    `  - CORS: ${corsOrigin ? `enabled (${serializeCorsOrigin({ corsOrigin })})` : 'disabled'}`,
+    `  - CORS: ${
+      corsOrigin
+        ? `enabled (${serializeCorsOrigin({ corsOrigin })})`
+        : 'disabled'
+    }`,
   )
   logger.info(
-    `  - Health endpoints: ${healthEndpoints.length ? healthEndpoints.join(', ') : '(none)'}`,
+    `  - Health endpoints: ${
+      healthEndpoints.length ? healthEndpoints.join(', ') : '(none)'
+    }`,
   )
 
   onSignals({ logger })
 
-  const child: ChildProcessWithoutNullStreams = spawn(stdioCmd, { shell: true })
+  const child: ChildProcessWithoutNullStreams = spawn(stdioCmd, {
+    shell: true,
+  })
   child.on('exit', (code, signal) => {
     logger.error(`Child exited: code=${code}, signal=${signal}`)
     process.exit(code ?? 1)

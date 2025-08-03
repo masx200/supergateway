@@ -1,7 +1,7 @@
 import express from 'express'
 import cors, { type CorsOptions } from 'cors'
 import { createServer } from 'http'
-import { spawn, ChildProcessWithoutNullStreams } from 'child_process'
+import { ChildProcessWithoutNullStreams, spawn } from 'child_process'
 import { Server } from '@modelcontextprotocol/sdk/server/index.js'
 import { JSONRPCMessage } from '@modelcontextprotocol/sdk/types.js'
 import { Logger } from '../types.js'
@@ -26,10 +26,16 @@ export async function stdioToWs(args: StdioToWsArgs) {
   logger.info(`  - stdio: ${stdioCmd}`)
   logger.info(`  - messagePath: ${messagePath}`)
   logger.info(
-    `  - CORS: ${corsOrigin ? `enabled (${serializeCorsOrigin({ corsOrigin })})` : 'disabled'}`,
+    `  - CORS: ${
+      corsOrigin
+        ? `enabled (${serializeCorsOrigin({ corsOrigin })})`
+        : 'disabled'
+    }`,
   )
   logger.info(
-    `  - Health endpoints: ${healthEndpoints.length ? healthEndpoints.join(', ') : '(none)'}`,
+    `  - Health endpoints: ${
+      healthEndpoints.length ? healthEndpoints.join(', ') : '(none)'
+    }`,
   )
 
   let wsTransport: WebSocketServerTransport | null = null

@@ -44,17 +44,25 @@ export async function stdioToStatelessStreamableHttp(
   } = args
 
   logger.info(
-    `  - Headers: ${Object(headers).length ? JSON.stringify(headers) : '(none)'}`,
+    `  - Headers: ${
+      Object(headers).length ? JSON.stringify(headers) : '(none)'
+    }`,
   )
   logger.info(`  - port: ${port}`)
   logger.info(`  - stdio: ${stdioCmd}`)
   logger.info(`  - streamableHttpPath: ${streamableHttpPath}`)
 
   logger.info(
-    `  - CORS: ${corsOrigin ? `enabled (${serializeCorsOrigin({ corsOrigin })})` : 'disabled'}`,
+    `  - CORS: ${
+      corsOrigin
+        ? `enabled (${serializeCorsOrigin({ corsOrigin })})`
+        : 'disabled'
+    }`,
   )
   logger.info(
-    `  - Health endpoints: ${healthEndpoints.length ? healthEndpoints.join(', ') : '(none)'}`,
+    `  - Health endpoints: ${
+      healthEndpoints.length ? healthEndpoints.join(', ') : '(none)'
+    }`,
   )
 
   onSignals({ logger })

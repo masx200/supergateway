@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { spawn, ChildProcess } from 'child_process'
+import { ChildProcess, spawn } from 'child_process'
 
 const PORT = 11000
 const BASE_URL = `http://0.0.0.0:${PORT}`

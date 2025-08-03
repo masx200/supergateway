@@ -26,4 +26,5 @@ The `tests/helpers/mock-mcp-server.js` script provides a lightweight local MCP
 server used during tests so everything runs offline. All tests should pass
 without external downloads.
 
-If network-dependent commands (like `npx -y @modelcontextprotocol/server-*`) fail, check network access.
+If network-dependent commands (like `npx -y @modelcontextprotocol/server-*`)
+fail, check network access.

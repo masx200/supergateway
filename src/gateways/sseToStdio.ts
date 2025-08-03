@@ -3,10 +3,10 @@ import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js'
 import { Server } from '@modelcontextprotocol/sdk/server/index.js'
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import type {
-  JSONRPCMessage,
-  JSONRPCRequest,
   ClientCapabilities,
   Implementation,
+  JSONRPCMessage,
+  JSONRPCRequest,
 } from '@modelcontextprotocol/sdk/types.js'
 import { z } from 'zod'
 import { getVersion } from '../lib/getVersion.js'
@@ -62,7 +62,9 @@ export async function sseToStdio(args: SseToStdioArgs) {
 
   logger.info(`  - sse: ${sseUrl}`)
   logger.info(
-    `  - Headers: ${Object.keys(headers).length ? JSON.stringify(headers) : '(none)'}`,
+    `  - Headers: ${
+      Object.keys(headers).length ? JSON.stringify(headers) : '(none)'
+    }`,
   )
   logger.info('Connecting to SSE...')
 
@@ -72,7 +74,10 @@ export async function sseToStdio(args: SseToStdioArgs) {
     eventSourceInit: {
       fetch: (...props: Parameters<typeof fetch>) => {
         const [url, init = {}] = props
-        return fetch(url, { ...init, headers: { ...init.headers, ...headers } })
+        return fetch(url, {
+          ...init,
+          headers: { ...init.headers, ...headers },
+        })
       },
     },
     requestInit: {

@@ -3,10 +3,10 @@ import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/
 import { Server } from '@modelcontextprotocol/sdk/server/index.js'
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import type {
-  JSONRPCMessage,
-  JSONRPCRequest,
   ClientCapabilities,
   Implementation,
+  JSONRPCMessage,
+  JSONRPCRequest,
 } from '@modelcontextprotocol/sdk/types.js'
 import { InitializeRequestSchema } from '@modelcontextprotocol/sdk/types.js'
 import { z } from 'zod'
@@ -63,7 +63,9 @@ export async function streamableHttpToStdio(args: StreamableHttpToStdioArgs) {
 
   logger.info(`  - streamableHttp: ${streamableHttpUrl}`)
   logger.info(
-    `  - Headers: ${Object.keys(headers).length ? JSON.stringify(headers) : '(none)'}`,
+    `  - Headers: ${
+      Object.keys(headers).length ? JSON.stringify(headers) : '(none)'
+    }`,
   )
   logger.info('Connecting to Streamable HTTP...')
 

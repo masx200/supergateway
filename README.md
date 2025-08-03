@@ -1,8 +1,13 @@
 ![Supergateway: Run stdio MCP servers over SSE and WS](https://raw.githubusercontent.com/supercorp-ai/supergateway/main/supergateway.png)
 
-**Supergateway** runs **MCP stdio-based servers** over **SSE (Server-Sent Events)** or **WebSockets (WS)** with one command. This is useful for remote access, debugging, or connecting to clients when your MCP server only supports stdio.
+**Supergateway** runs **MCP stdio-based servers** over **SSE (Server-Sent
+Events)** or **WebSockets (WS)** with one command. This is useful for remote
+access, debugging, or connecting to clients when your MCP server only supports
+stdio.
 
-Supported by [Supermachine](https://supermachine.ai) (hosted MCPs), [Superinterface](https://superinterface.ai), and [Supercorp](https://supercorp.ai).
+Supported by [Supermachine](https://supermachine.ai) (hosted MCPs),
+[Superinterface](https://superinterface.ai), and
+[Supercorp](https://supercorp.ai).
 
 ## Installation & Usage
 
@@ -13,21 +18,38 @@ npx -y supergateway --stdio "uvx mcp-server-git"
 ```
 
 - **`--stdio "command"`**: Command that runs an MCP server over stdio
-- **`--sse "https://mcp-server-ab71a6b2-cd55-49d0-adba-562bc85956e3.supermachine.app"`**: SSE URL to connect to (SSE→stdio mode)
-- **`--streamableHttp "https://mcp-server.example.com/mcp"`**: Streamable HTTP URL to connect to (StreamableHttp→stdio mode)
-- **`--outputTransport stdio | sse | ws | streamableHttp`**: Output MCP transport (default: `sse` with `--stdio`, `stdio` with `--sse` or `--streamableHttp`)
-- **`--port 8000`**: Port to listen on (stdio→SSE or stdio→WS mode, default: `8000`)
-- **`--baseUrl "http://localhost:8000"`**: Base URL for SSE or WS clients (stdio→SSE mode; optional)
-- **`--ssePath "/sse"`**: Path for SSE subscriptions (stdio→SSE mode, default: `/sse`)
-- **`--messagePath "/message"`**: Path for messages (stdio→SSE or stdio→WS mode, default: `/message`)
-- **`--streamableHttpPath "/mcp"`**: Path for Streamable HTTP (stdio→Streamable HTTP mode, default: `/mcp`)
+- **`--sse "https://mcp-server-ab71a6b2-cd55-49d0-adba-562bc85956e3.supermachine.app"`**:
+  SSE URL to connect to (SSE→stdio mode)
+- **`--streamableHttp "https://mcp-server.example.com/mcp"`**: Streamable HTTP
+  URL to connect to (StreamableHttp→stdio mode)
+- **`--outputTransport stdio | sse | ws | streamableHttp`**: Output MCP
+  transport (default: `sse` with `--stdio`, `stdio` with `--sse` or
+  `--streamableHttp`)
+- **`--port 8000`**: Port to listen on (stdio→SSE or stdio→WS mode, default:
+  `8000`)
+- **`--baseUrl "http://localhost:8000"`**: Base URL for SSE or WS clients
+  (stdio→SSE mode; optional)
+- **`--ssePath "/sse"`**: Path for SSE subscriptions (stdio→SSE mode, default:
+  `/sse`)
+- **`--messagePath "/message"`**: Path for messages (stdio→SSE or stdio→WS mode,
+  default: `/message`)
+- **`--streamableHttpPath "/mcp"`**: Path for Streamable HTTP (stdio→Streamable
+  HTTP mode, default: `/mcp`)
 - **`--stateful`**: Run stdio→Streamable HTTP in stateful mode
-- **`--sessionTimeout 60000`**: Session timeout in milliseconds (stateful stdio→Streamable HTTP mode only)
-- **`--header "x-user-id: 123"`**: Add one or more headers (stdio→SSE, SSE→stdio, or Streamable HTTP→stdio mode; can be used multiple times)
-- **`--oauth2Bearer "some-access-token"`**: Adds an `Authorization` header with the provided Bearer token
-- **`--logLevel debug | info | none`**: Controls logging level (default: `info`). Use `debug` for more verbose logs, `none` to suppress all logs.
-- **`--cors`**: Enable CORS (stdio→SSE or stdio→WS mode). Use `--cors` with no values to allow all origins, or supply one or more allowed origins (e.g. `--cors "http://example.com"` or `--cors "/example\\.com$/"` for regex matching).
-- **`--healthEndpoint /healthz`**: Register one or more endpoints (stdio→SSE or stdio→WS mode; can be used multiple times) that respond with `"ok"`
+- **`--sessionTimeout 60000`**: Session timeout in milliseconds (stateful
+  stdio→Streamable HTTP mode only)
+- **`--header "x-user-id: 123"`**: Add one or more headers (stdio→SSE,
+  SSE→stdio, or Streamable HTTP→stdio mode; can be used multiple times)
+- **`--oauth2Bearer "some-access-token"`**: Adds an `Authorization` header with
+  the provided Bearer token
+- **`--logLevel debug | info | none`**: Controls logging level (default:
+  `info`). Use `debug` for more verbose logs, `none` to suppress all logs.
+- **`--cors`**: Enable CORS (stdio→SSE or stdio→WS mode). Use `--cors` with no
+  values to allow all origins, or supply one or more allowed origins (e.g.
+  `--cors "http://example.com"` or `--cors "/example\\.com$/"` for regex
+  matching).
+- **`--healthEndpoint /healthz`**: Register one or more endpoints (stdio→SSE or
+  stdio→WS mode; can be used multiple times) that respond with `"ok"`
 
 ## stdio → SSE
 
@@ -51,9 +73,11 @@ Connect to a remote SSE server and expose locally via stdio:
 npx -y supergateway --sse "https://mcp-server-ab71a6b2-cd55-49d0-adba-562bc85956e3.supermachine.app"
 ```
 
-Useful for integrating remote SSE MCP servers into local command-line environments.
+Useful for integrating remote SSE MCP servers into local command-line
+environments.
 
-You can also pass headers when sending requests. This is useful for authentication:
+You can also pass headers when sending requests. This is useful for
+authentication:
 
 ```bash
 npx -y supergateway \
@@ -70,7 +94,9 @@ Connect to a remote Streamable HTTP server and expose locally via stdio:
 npx -y supergateway --streamableHttp "https://mcp-server.example.com/mcp"
 ```
 
-This mode is useful for connecting to MCP servers that use the newer Streamable HTTP transport protocol. Like SSE mode, you can also pass headers for authentication:
+This mode is useful for connecting to MCP servers that use the newer Streamable
+HTTP transport protocol. Like SSE mode, you can also pass headers for
+authentication:
 
 ```bash
 npx -y supergateway \
@@ -101,7 +127,8 @@ npx -y supergateway \
     --sessionTimeout 60000 --port 8000
 ```
 
-The Streamable HTTP endpoint defaults to `http://localhost:8000/mcp` (configurable via `--streamableHttpPath`).
+The Streamable HTTP endpoint defaults to `http://localhost:8000/mcp`
+(configurable via `--streamableHttpPath`).
 
 ## stdio → WS
 
@@ -145,12 +172,16 @@ ngrok http 8000
 
 ngrok provides a public URL for remote access.
 
-MCP server will be available at URL similar to: https://1234-567-890-12-456.ngrok-free.app/sse
+MCP server will be available at URL similar to:
+https://1234-567-890-12-456.ngrok-free.app/sse
 
 ## Running with Docker
 
-A Docker-based workflow avoids local Node.js setup. A ready-to-run Docker image is available here:
-[supercorp/supergateway](https://hub.docker.com/r/supercorp/supergateway). Also on GHCR: [ghcr.io/supercorp-ai/supergateway](https://github.com/supercorp-ai/supergateway/pkgs/container/supergateway)
+A Docker-based workflow avoids local Node.js setup. A ready-to-run Docker image
+is available here:
+[supercorp/supergateway](https://hub.docker.com/r/supercorp/supergateway). Also
+on GHCR:
+[ghcr.io/supercorp-ai/supergateway](https://github.com/supercorp-ai/supergateway/pkgs/container/supergateway)
 
 ### Using the Official Image
 
@@ -160,22 +191,22 @@ docker run -it --rm -p 8000:8000 supercorp/supergateway \
     --port 8000
 ```
 
-Docker pulls the image automatically. The MCP server runs in the container’s root directory (`/`). You can mount host directories if needed.
+Docker pulls the image automatically. The MCP server runs in the container’s
+root directory (`/`). You can mount host directories if needed.
 
 #### Images with dependencies
 
-Pull any of these pre-built Supergateway images for various dependencies you might need.
+Pull any of these pre-built Supergateway images for various dependencies you
+might need.
 
-- **uvx**
-  Supergateway + uv/uvx, so you can call `uvx` directly:
+- **uvx** Supergateway + uv/uvx, so you can call `uvx` directly:
 
   ```bash
   docker run -it --rm -p 8000:8000 supercorp/supergateway:uvx \
     --stdio "uvx mcp-server-fetch"
   ```
 
-- **deno**
-  Supergateway + Deno, ready to run Deno-based MCP servers:
+- **deno** Supergateway + Deno, ready to run Deno-based MCP servers:
   ```bash
   docker run -it --rm -p 8000:8000 supercorp/supergateway:deno \
     --stdio "deno run -A jsr:@omedia/mcp-server-drupal --drupal-url https://your-drupal-server.com"
@@ -235,7 +266,8 @@ Claude Desktop can use Supergateway’s SSE→stdio mode.
 
 ## Using with Cursor (SSE → stdio mode)
 
-Cursor can also integrate with Supergateway in SSE→stdio mode. The configuration is similar to Claude Desktop.
+Cursor can also integrate with Supergateway in SSE→stdio mode. The configuration
+is similar to Claude Desktop.
 
 ### NPX-based MCP Server Example for Cursor
 
@@ -275,11 +307,17 @@ Cursor can also integrate with Supergateway in SSE→stdio mode. The configurati
 }
 ```
 
-**Note:** Although the setup supports sending headers via the `--header` flag, if you need to pass an Authorization header (which typically includes a space, e.g. `"Bearer 123"`), you must use the `--oauth2Bearer` flag due to a known Cursor bug with spaces in command-line arguments.
+**Note:** Although the setup supports sending headers via the `--header` flag,
+if you need to pass an Authorization header (which typically includes a space,
+e.g. `"Bearer 123"`), you must use the `--oauth2Bearer` flag due to a known
+Cursor bug with spaces in command-line arguments.
 
 ## Why MCP?
 
-[Model Context Protocol](https://spec.modelcontextprotocol.io/) standardizes AI tool interactions. Supergateway converts MCP stdio servers into SSE or WS services, simplifying integration and debugging with web-based or remote clients.
+[Model Context Protocol](https://spec.modelcontextprotocol.io/) standardizes AI
+tool interactions. Supergateway converts MCP stdio servers into SSE or WS
+services, simplifying integration and debugging with web-based or remote
+clients.
 
 ## Advanced Configuration
 
@@ -287,11 +325,13 @@ Supergateway emphasizes modularity:
 
 - Automatically manages JSON-RPC versioning.
 - Retransmits package metadata where possible.
-- stdio→SSE or stdio→WS mode logs via standard output; SSE→stdio mode logs via stderr.
+- stdio→SSE or stdio→WS mode logs via standard output; SSE→stdio mode logs via
+  stderr.
 
 ## Additional resources
 
-- [Superargs](https://github.com/supercorp-ai/superargs) - provide arguments to MCP servers during runtime.
+- [Superargs](https://github.com/supercorp-ai/superargs) - provide arguments to
+  MCP servers during runtime.
 
 ## Contributors
 
@@ -323,13 +363,15 @@ Supergateway emphasizes modularity:
 
 ## Contributing
 
-Issues and PRs welcome. Please open one if you encounter problems or have feature suggestions.
+Issues and PRs welcome. Please open one if you encounter problems or have
+feature suggestions.
 
 ## Tests
 
 Supergateway is tested with the Node Test Runner.
 
-To run the suite locally you need Node **24+**. Using [nvm](https://github.com/nvm-sh/nvm) you can install and activate it with:
+To run the suite locally you need Node **24+**. Using
+[nvm](https://github.com/nvm-sh/nvm) you can install and activate it with:
 
 ```bash
 nvm install 24

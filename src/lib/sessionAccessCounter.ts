@@ -38,7 +38,9 @@ export class SessionAccessCounter {
     } else {
       // Increment active session
       this.logger.info(
-        `Session access count ${session.accessCount} -> ${session.accessCount + 1} for ${sessionId}`,
+        `Session access count ${session.accessCount} -> ${
+          session.accessCount + 1
+        } for ${sessionId}`,
       )
       session.accessCount++
     }
@@ -73,7 +75,9 @@ export class SessionAccessCounter {
 
     session.accessCount--
     this.logger.info(
-      `Session access count ${session.accessCount + 1} -> ${session.accessCount} for ${sessionId}`,
+      `Session access count ${
+        session.accessCount + 1
+      } -> ${session.accessCount} for ${sessionId}`,
     )
 
     if (session.accessCount === 0) {
