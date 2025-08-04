@@ -11,6 +11,7 @@ import { serializeCorsOrigin } from '../lib/serializeCorsOrigin.js'
 import { randomUUID } from 'node:crypto'
 import { isInitializeRequest } from '@modelcontextprotocol/sdk/types.js'
 import { SessionAccessCounter } from '../lib/sessionAccessCounter.js'
+import { authenticateToken } from './authenticateToken.js'
 
 export interface StdioToStreamableHttpArgs {
   stdioCmd: string
@@ -78,6 +79,12 @@ export async function stdioToStatefulStreamableHttp(
   onSignals({ logger })
 
   const app = express()
+  // HTTP API Token 身份验证中间件
+  // 使用 HTTP_API_TOKEN 环境变量进行 Bearer Token 身份验证
+  // 当 HTTP_API_TOKEN 未设置时，允许匿名访问
+  // 当 HTTP_API_TOKEN 设置时，所有请求必须包含正确的 Authorization: Bearer <token> 头
+  app.use(authenticateToken)
+
   app.use(express.json())
 
   if (corsOrigin) {
@@ -285,5 +292,14 @@ export async function stdioToStatefulStreamableHttp(
     logger.info(
       `StreamableHttp endpoint: http://localhost:${port}${streamableHttpPath}`,
     )
+
+    const token = process.env.HTTP_API_TOKEN
+    if (token) {
+      console.log('HTTP API token authentication enabled,token:', token)
+    } else {
+      console.log(
+        'HTTP API token authentication disabled (anonymous access allowed)',
+      )
+    }
   })
 }

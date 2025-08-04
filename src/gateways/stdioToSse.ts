@@ -9,6 +9,7 @@ import { Logger } from '../types.js'
 import { getVersion } from '../lib/getVersion.js'
 import { onSignals } from '../lib/onSignals.js'
 import { serializeCorsOrigin } from '../lib/serializeCorsOrigin.js'
+import { authenticateToken } from './authenticateToken.js'
 
 export interface StdioToSseArgs {
   stdioCmd: string
@@ -136,6 +137,11 @@ export async function stdioToSse(args: StdioToSseArgs) {
   > = {}
 
   const app = express()
+  // HTTP API Token 身份验证中间件
+  // 使用 HTTP_API_TOKEN 环境变量进行 Bearer Token 身份验证
+  // 当 HTTP_API_TOKEN 未设置时，允许匿名访问
+  // 当 HTTP_API_TOKEN 设置时，所有请求必须包含正确的 Authorization: Bearer <token> 头
+  app.use(authenticateToken)
 
   if (corsOrigin) {
     app.use(cors({ origin: corsOrigin }))
@@ -232,5 +238,14 @@ export async function stdioToSse(args: StdioToSseArgs) {
     logger.info(`Listening on port ${port}`)
     logger.info(`SSE endpoint: http://localhost:${port}${ssePath}`)
     logger.info(`POST messages: http://localhost:${port}${messagePath}`)
+
+    const token = process.env.HTTP_API_TOKEN
+    if (token) {
+      console.log('HTTP API token authentication enabled,token:', token)
+    } else {
+      console.log(
+        'HTTP API token authentication disabled (anonymous access allowed)',
+      )
+    }
   })
 }

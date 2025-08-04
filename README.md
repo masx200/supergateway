@@ -17,6 +17,43 @@ Run Supergateway via `npx`:
 npx -y supergateway --stdio "uvx mcp-server-git"
 ```
 
+### HTTP API Token 身份验证
+
+Supergateway 支持使用环境变量 `HTTP_API_TOKEN` 进行 HTTP Bearer Token 身份验证。当设置此环境变量时，所有 HTTP 端点（SSE、WebSocket 和 Streamable HTTP）都需要在 Authorization 头中提供有效的 Bearer Token。
+
+**启用身份验证：**
+
+```bash
+# 设置 token 环境变量
+export HTTP_API_TOKEN="your-secret-token"
+
+# 使用身份验证运行 supergateway
+npx -y supergateway --stdio "uvx mcp-server-git" --port 8000
+```
+
+**在请求中使用身份验证：**
+在 Authorization 头中包含 Bearer Token：
+
+```bash
+curl -H "Authorization: Bearer your-secret-token" http://localhost:8000/sse
+curl -H "Authorization: Bearer your-secret-token" -X POST http://localhost:8000/message
+```
+
+**禁用身份验证：**
+不设置 `HTTP_API_TOKEN` 环境变量，supergateway 将允许匿名访问。
+
+当身份验证启用时，服务器将记录：
+
+```
+HTTP API token authentication enabled, token: your-secret-token
+```
+
+当身份验证禁用时，服务器将记录：
+
+```
+HTTP API token authentication disabled (anonymous access allowed)
+```
+
 - **`--stdio "command"`**: Command that runs an MCP server over stdio
 - **`--sse "https://mcp-server-ab71a6b2-cd55-49d0-adba-562bc85956e3.supermachine.app"`**:
   SSE URL to connect to (SSE→stdio mode)
