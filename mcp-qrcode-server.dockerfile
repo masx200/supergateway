@@ -4,9 +4,9 @@ from registry.cn-hangzhou.aliyuncs.com/masx200/mcp-qrcode:2025-08-03-12-36-24
 copy --from=node_base /usr/local /usr/local
 
 WORKDIR /usr/local/lib/node_modules/supergateway
-
+run rm -rfv /usr/local/lib/node_modules/supergateway/*
 copy ./* /usr/local/lib/node_modules/supergateway
-
+copy ./src /usr/local/lib/node_modules/supergateway/src
 EXPOSE 8000
 
 run npm config set registry https://registry.npmmirror.com
