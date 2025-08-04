@@ -42,7 +42,6 @@ async function factory(
       response: express.Response
     }
   >,
-
   transport: SSEServerTransport,
 ) {
   const child: ChildProcessWithoutNullStreams = spawn(stdioCmd, {
@@ -224,7 +223,12 @@ export async function stdioToSse(args: StdioToSseArgs) {
     }
   })
 
-  app.listen(port, () => {
+  app.listen(port, (err) => {
+    if (err) {
+      logger.error('Error starting server:', err)
+      process.exit(1)
+      return
+    }
     logger.info(`Listening on port ${port}`)
     logger.info(`SSE endpoint: http://localhost:${port}${ssePath}`)
     logger.info(`POST messages: http://localhost:${port}${messagePath}`)

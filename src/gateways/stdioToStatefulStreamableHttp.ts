@@ -147,10 +147,7 @@ export async function stdioToStatefulStreamableHttp(
         },
       })
       await server.connect(transport)
-      const child = spawn(stdioCmd, { shell: true,
-      
-      env: process.env,
-       })
+      const child = spawn(stdioCmd, { shell: true, env: process.env })
       child.on('exit', (code, signal) => {
         logger.error(`Child exited: code=${code}, signal=${signal}`)
         transport.close()
@@ -278,7 +275,12 @@ export async function stdioToStatefulStreamableHttp(
   // Handle DELETE requests for session termination
   app.delete(streamableHttpPath, handleSessionRequest)
 
-  app.listen(port, () => {
+  app.listen(port, (err) => {
+    if (err) {
+      logger.error('Error starting server:', err)
+      process.exit(1)
+      return
+    }
     logger.info(`Listening on port ${port}`)
     logger.info(
       `StreamableHttp endpoint: http://localhost:${port}${streamableHttpPath}`,
