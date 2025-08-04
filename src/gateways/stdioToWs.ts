@@ -149,6 +149,11 @@ export async function stdioToWs(args: StdioToWsArgs) {
       logger.info(`Listening on port ${port}`)
       logger.info(`WebSocket endpoint: ws://localhost:${port}${messagePath}`)
     })
+    httpServer.on('error', (err) => {
+      logger.error(`Error starting server: ${err.message}`)
+      cleanup()
+      process.exit(1)
+    })
   } catch (err: any) {
     logger.error(`Failed to start: ${err.message}`)
     cleanup()

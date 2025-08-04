@@ -31,14 +31,6 @@ export HTTP_API_TOKEN="your-secret-token"
 npx -y supergateway --stdio "uvx mcp-server-git" --port 8000
 ```
 
-**在请求中使用身份验证：**
-在 Authorization 头中包含 Bearer Token：
-
-```bash
-curl -H "Authorization: Bearer your-secret-token" http://localhost:8000/sse
-curl -H "Authorization: Bearer your-secret-token" -X POST http://localhost:8000/message
-```
-
 **禁用身份验证：**
 不设置 `HTTP_API_TOKEN` 环境变量，supergateway 将允许匿名访问。
 
