@@ -19,7 +19,9 @@ npx -y supergateway --stdio "uvx mcp-server-git"
 
 ### HTTP API Token 身份验证
 
-Supergateway 支持使用环境变量 `HTTP_API_TOKEN` 进行 HTTP Bearer Token 身份验证。当设置此环境变量时，所有 HTTP 端点（SSE、WebSocket 和 Streamable HTTP）都需要在 Authorization 头中提供有效的 Bearer Token。
+Supergateway 支持使用环境变量 `HTTP_API_TOKEN` 进行 HTTP Bearer Token
+身份验证。当设置此环境变量时，所有 HTTP 端点（SSE、WebSocket 和 Streamable
+HTTP）都需要在 Authorization 头中提供有效的 Bearer Token。
 
 **启用身份验证：**
 
@@ -31,8 +33,8 @@ export HTTP_API_TOKEN="your-secret-token"
 npx -y supergateway --stdio "uvx mcp-server-git" --port 8000
 ```
 
-**禁用身份验证：**
-不设置 `HTTP_API_TOKEN` 环境变量，supergateway 将允许匿名访问。
+**禁用身份验证：** 不设置 `HTTP_API_TOKEN` 环境变量，supergateway
+将允许匿名访问。
 
 当身份验证启用时，服务器将记录：
 
