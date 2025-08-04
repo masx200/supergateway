@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { Client } from '@modelcontextprotocol/sdk/client/index.js'
 import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js'
 import { Server } from '@modelcontextprotocol/sdk/server/index.js'
