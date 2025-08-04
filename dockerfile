@@ -15,3 +15,5 @@ env NODE_OPTIONS="--max-old-space-size=4096"
 
 run run sh -c 'NODE_OPTIONS="--max-old-space-size=4096" npm run build'
 ENTRYPOINT ["node","/usr/local/lib/node_modules/supergateway/dist/index.js"]
+
+CMD ["--help"]

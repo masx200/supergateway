@@ -21,4 +21,4 @@ ENTRYPOINT ["node","/usr/local/lib/node_modules/supergateway/dist/index.js"]
 
 run cnpm i -g @mcpcn/mcp-qrcode
 
-cmd ['--stdio', 'npx -y "@mcpcn/mcp-qrcode"' ,'--port' ,'8000', '--outputTransport', 'streamableHttp', '--streamableHttpPath', '/mcp' ,'--stateful']
+cmd [    "--stdio",    "npx -y \"@mcpcn/mcp-qrcode\"",    "--port",    "8000",    "--outputTransport",    "streamableHttp",    "--streamableHttpPath",    "/mcp",    "--stateful"]
