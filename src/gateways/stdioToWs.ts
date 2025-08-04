@@ -1,6 +1,6 @@
 import express from 'express'
 import cors, { type CorsOptions } from 'cors'
-import { createServer } from 'http'
+import { IncomingMessage, createServer } from 'http'
 import { ChildProcessWithoutNullStreams, spawn } from 'child_process'
 import { Server } from '@modelcontextprotocol/sdk/server/index.js'
 import { JSONRPCMessage } from '@modelcontextprotocol/sdk/types.js'
@@ -9,6 +9,7 @@ import { getVersion } from '../lib/getVersion.js'
 import { WebSocketServerTransport } from '../server/websocket.js'
 import { onSignals } from '../lib/onSignals.js'
 import { serializeCorsOrigin } from '../lib/serializeCorsOrigin.js'
+import type { VerifyClientCallbackAsync, VerifyClientCallbackSync } from 'ws'
 
 export interface StdioToWsArgs {
   stdioCmd: string
@@ -117,10 +118,25 @@ export async function stdioToWs(args: StdioToWsArgs) {
     }
 
     const httpServer = createServer(app)
-
+    const verifyClient:
+      | VerifyClientCallbackAsync
+      | VerifyClientCallbackSync
+      | undefined = process.env.HTTP_API_TOKEN
+      ? async function (info, callback) {
+          const request = info.req as IncomingMessage
+          const authHeader = request.headers['authorization']
+          if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            callback(false)
+            return
+          }
+          const token = authHeader.slice(7)
+          callback(validateBearerToken(token))
+        }
+      : undefined
     wsTransport = new WebSocketServerTransport({
       path: messagePath,
       server: httpServer,
+      verifyClient,
     })
 
     await server.connect(wsTransport)
@@ -149,9 +165,49 @@ export async function stdioToWs(args: StdioToWsArgs) {
       cleanup()
       process.exit(1)
     })
+
+    // 模拟验证函数（可替换为 JWT 验证逻辑）
+    function validateBearerToken(token: string) {
+      // 示例：简单对比
+      return token === process.env.HTTP_API_TOKEN
+    }
+    httpServer.on('upgrade', (request, socket, head) => {
+      if (process.env.HTTP_API_TOKEN) {
+        const authHeader = request.headers['authorization']
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+          socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n')
+          socket.destroy()
+          return
+        }
+
+        const token = authHeader.slice(7) // 去掉 "Bearer "
+
+        if (!validateBearerToken(token)) {
+          socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n')
+          socket.destroy()
+          return
+        }
+      }
+      if (!wsTransport) {
+        throw new Error('wsTransport is not defined')
+      }
+      const wss = wsTransport.wss
+      wss.handleUpgrade(request, socket, head, (ws) => {
+        wss.emit('connection', ws, request)
+      })
+    })
     httpServer.listen(port, () => {
       logger.info(`Listening on port ${port}`)
       logger.info(`WebSocket endpoint: ws://localhost:${port}${messagePath}`)
+
+      const token = process.env.HTTP_API_TOKEN
+      if (token) {
+        console.log('HTTP API token authentication enabled,token:', token)
+      } else {
+        console.log(
+          'HTTP API token authentication disabled (anonymous access allowed)',
+        )
+      }
     })
   } catch (err: any) {
     logger.error(`Failed to start: ${err.message}`)

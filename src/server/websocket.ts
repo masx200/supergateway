@@ -6,9 +6,9 @@ import { JSONRPCMessage } from '@modelcontextprotocol/sdk/types.js'
 import { v4 as uuidv4 } from 'uuid'
 import { WebSocket, WebSocketServer } from 'ws'
 import { Server } from 'http'
-
+import type { VerifyClientCallbackAsync, VerifyClientCallbackSync } from 'ws'
 export class WebSocketServerTransport implements Transport {
-  private wss!: WebSocketServer
+  public wss!: WebSocketServer
   private clients: Map<string, WebSocket> = new Map()
 
   onclose?: () => void
@@ -35,10 +35,22 @@ export class WebSocketServerTransport implements Transport {
       : undefined
   }
 
-  constructor({ path, server }: { path: string; server: Server }) {
+  constructor({
+    path,
+    server,
+    verifyClient,
+  }: {
+    path: string
+    server: Server
+    verifyClient?:
+      | VerifyClientCallbackAsync
+      | VerifyClientCallbackSync
+      | undefined
+  }) {
     this.wss = new WebSocketServer({
       path,
       server,
+      verifyClient,
     })
   }
 
