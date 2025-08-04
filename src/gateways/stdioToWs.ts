@@ -10,6 +10,7 @@ import { WebSocketServerTransport } from '../server/websocket.js'
 import { onSignals } from '../lib/onSignals.js'
 import { serializeCorsOrigin } from '../lib/serializeCorsOrigin.js'
 import type { VerifyClientCallbackAsync, VerifyClientCallbackSync } from 'ws'
+import { authenticateToken } from './authenticateToken.js'
 
 export interface StdioToWsArgs {
   stdioCmd: string
@@ -98,7 +99,7 @@ export async function stdioToWs(args: StdioToWsArgs) {
     })
 
     const app = express()
-
+    app.use(authenticateToken)
     if (corsOrigin) {
       app.use(cors({ origin: corsOrigin }))
     }
