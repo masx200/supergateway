@@ -1,5 +1,3 @@
-//@ts-nocheck
-
 import express from 'express'
 import bodyParser from 'body-parser'
 import cors, { type CorsOptions } from 'cors'

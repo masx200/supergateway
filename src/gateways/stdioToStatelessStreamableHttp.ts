@@ -1,4 +1,3 @@
-//@ts-nocheck
 import express from 'express'
 import cors, { type CorsOptions } from 'cors'
 import { spawn } from 'child_process'
