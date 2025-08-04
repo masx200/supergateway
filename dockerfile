@@ -3,7 +3,7 @@ FROM node:24-alpine
 WORKDIR /usr/local/lib/node_modules/supergateway
 
 copy ./* /usr/local/lib/node_modules/supergateway
-
+copy ./src /usr/local/lib/node_modules/supergateway/src
 EXPOSE 8000
 
 run npm config set registry https://registry.npmmirror.com
