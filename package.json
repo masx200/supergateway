@@ -37,7 +37,7 @@
     "@types/yargs-parser": "^21.0.3",
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",
-    "express": "^4.21.2",
+    "express": "^4.22.1",
     "uuid": "^11.1.0",
     "ws": "^8.18.2",
     "yargs": "^17.7.2",
