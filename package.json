@@ -30,7 +30,7 @@
     "**/*": "prettier --write --ignore-unknown"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.25.2",
+    "@modelcontextprotocol/sdk": "^1.26.0",
     "@types/connect": "^3.4.38",
     "@types/express-serve-static-core": "^5.0.7",
     "@types/serve-static": "^1.15.8",
