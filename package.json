@@ -57,5 +57,8 @@
     "ts-node": "^10.9.2",
     "tsx": "^4.19.4",
     "typescript": "5.9.2"
+  },
+  "overrides": {
+    "fast-uri": ">=3.1.2"
   }
 }
